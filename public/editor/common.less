@@ -1,0 +1,223 @@
+@import ".global.less";
+
+@font-face {
+	font-family: "Open Sans";
+	src: url(../resources/font/OpenSans-Regular.ttf);
+}
+
+@font-face {
+	font-family: "iconfont";
+	src: url(../resources/font/iconfont.ttf);
+}
+
+.iconfont {
+	font-family: iconfont !important;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-stroke-width: 0.2px;
+}
+
+* {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+@headerHeight: 3.4em;
+.editor-header {
+	background-color: @secondaryColor;
+	height: @headerHeight;
+	.item {
+		display: inline-block;
+		&.left {
+			background-color: @primaryColor;
+		}
+		color: #fff;
+		height: @headerHeight;
+		padding: 0 1em;
+		line-height: @headerHeight;
+		&.operation {
+			padding: 0;
+			.button {
+				cursor: pointer;
+				padding: 0 0.5em;
+				display: inline-block;
+				&:hover {
+					background-color: rgba(255, 255, 255, 0.1);
+				}
+			}
+			background-color: rgba(255, 255, 255, 0.2);
+			.buttons, .button {
+				height: @headerHeight;
+			}
+		}
+		&.right {
+			float: right;
+		}
+	}
+}
+
+.editor-body {
+	.h-box {
+		height: 100%;
+		.box {
+			border-right: 1px solid @lightSecondaryColor;
+			.settings {
+				padding: 1em;
+				width: 12em;
+			}
+
+		}
+		.flex-box {
+			.draw-pad {
+				left: 2em;
+				right: 1em;
+				top: 1em;
+				bottom: 1em;
+				//border: 1px solid rgba(70, 94, 126, 0.42);
+			}
+		}
+	}
+
+}
+
+.editor-footer {
+	height: 3.4em;
+}
+
+body {
+	> .v-box {
+		height: 100%;
+	}
+}
+
+.component-box {
+	padding: 0.5em;
+	.components {
+		min-width: 14em;
+		> * {
+			margin: 0.5em 0;
+			> .label {
+				margin-top: 0.5em;
+				text-align: center;
+				margin-bottom: 0.5em;
+			}
+			cursor: pointer;
+
+			&.current {
+				background-color: rgba(0, 0, 0, 0.1);
+				border-radius: 4px;
+			}
+		}
+	}
+}
+
+.c-icon {
+	height: 3em;
+	width: 5em;
+	margin-left: auto;
+	margin-right: auto;
+	&.button {
+		background: url('/resources/images/components/button.png') no-repeat transparent;
+	}
+	&.checkbox {
+		background: url('/resources/images/components/checkbox.png') no-repeat transparent;
+	}
+	&.divider {
+		background: url('/resources/images/components/divider.png') no-repeat transparent;
+	}
+	&.image {
+		background: url('/resources/images/components/image.png') no-repeat transparent;
+	}
+	&.input {
+		background: url('/resources/images/components/input.png') no-repeat transparent;
+	}
+	&.link {
+		background: url('/resources/images/components/link.png') no-repeat transparent;
+	}
+	&.list_view {
+		background: url('/resources/images/components/list_view.png') no-repeat transparent;
+	}
+	&.text {
+		background: url('/resources/images/components/text.png') no-repeat transparent;
+	}
+	&.text_area {
+		background: url('/resources/images/components/text_area.png') no-repeat transparent;
+	}
+	&.toggle {
+		background: url('/resources/images/components/toggle.png') no-repeat transparent;
+	}
+}
+
+.draw-pad {
+	&.accepted {
+		border: 1px dashed rgba(67, 195, 125, 0.26)
+	}
+	> .ui.grid {
+		margin: 0 !important;
+		> .column {
+			position: relative;
+			&:before {
+				position: absolute;
+				left: 1px;
+				top: 1px;
+				right: 1px;
+				bottom: 1px;
+				content: "";
+				//background-color: rgba(86, 61, 124, .1);
+				border: 1px dashed rgba(86, 61, 124, .2);
+				//.box-shadow(0px 0px 0px 1px rgba(86, 61, 124, 0.2) inset;);
+			}
+			&:after {
+				display: block;
+				min-height: 40px;
+				content: "";
+			}
+			&.accepted:after {
+				background-color: rgba(86, 61, 124, .1);
+				-webkit-box-shadow: 0px 0px 0px 1px rgba(86, 61, 124, 0.2) inset;
+				box-shadow: 0px 0px 0px 1px rgba(86, 61, 124, 0.2) inset;
+
+			}
+		}
+	}
+	> .ui.form {
+		margin: 0 !important;
+
+		> .field,>.fields >.field {
+			.toolbar{
+				padding-left: 0.25rem;
+				position: absolute;
+				height: 20px;
+				top: 1px;
+				right: 1px;
+				background-color: rgba(86, 61, 124, .3);
+				>i{
+					cursor: pointer;
+					color: #fff;
+
+				}
+			}
+			padding: 2px !important;
+			position: relative;
+			&:before {
+				position: absolute;
+				left: 1px;
+				top: 1px;
+				right: 1px;
+				bottom: 1px;
+				content: "";
+				//background-color: rgba(86, 61, 124, .1);
+				border: 1px dashed rgba(86, 61, 124, .2);
+				//.box-shadow(0px 0px 0px 1px rgba(86, 61, 124, 0.2) inset;);
+			}
+			&:after {
+				display: block;
+				min-height: 40px;
+				content: "";
+			}
+			&.accepted:after {
+				background-color: rgba(86, 61, 124, .1);
+
+			}
+		}
+	}
+}

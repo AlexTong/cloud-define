@@ -1,0 +1,46 @@
+extends layout
+block body
+	body
+
+		.v-box
+			.editor-header.box
+				.item.left 云表单设计器
+
+				.item.operation
+					.button
+						i.icon.reply
+					.button
+						i.icon.share
+				.item.right 让设计更加简单
+
+			.editor-body.flex-box
+				div
+					.h-box
+						.box.component-box
+							.small-block-grid-2.components
+								li.component(c-repeat="item in components" c-cname="item.name")
+									div.c-icon(c-classname="'c-icon '+item.icon" )
+									.label(c-bind="item.label")
+						.flex-box
+							div.draw-pad
+								//.ui.stackable.grid
+								//	.four.wide.column
+								//	.four.wide.column
+								//	.four.wide.column
+								//	.four.wide.column
+								//	.four.wide.column
+								.ui.form
+									.field
+
+
+									.fields
+										.two.wide.field
+										.two.wide.field
+										.two.wide.field
+
+
+
+
+
+
+
