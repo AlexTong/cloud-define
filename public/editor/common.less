@@ -173,14 +173,13 @@ body {
 			}
 			&.accepted:after {
 				background-color: rgba(86, 61, 124, .1);
-				-webkit-box-shadow: 0px 0px 0px 1px rgba(86, 61, 124, 0.2) inset;
-				box-shadow: 0px 0px 0px 1px rgba(86, 61, 124, 0.2) inset;
-
+				.box-shadow(0px 0px 0px 1px rgba(86, 61, 124, 0.2) inset);
 			}
 		}
 	}
 	> .ui.form {
 		margin: 0 !important;
+		height: 100%;
 
 		> .field,>.fields >.field {
 			.toolbar{
@@ -193,7 +192,6 @@ body {
 				>i{
 					cursor: pointer;
 					color: #fff;
-
 				}
 			}
 			padding: 2px !important;
@@ -216,7 +214,6 @@ body {
 			}
 			&.accepted:after {
 				background-color: rgba(86, 61, 124, .1);
-
 			}
 		}
 	}

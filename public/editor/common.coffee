@@ -10,25 +10,64 @@ components = [
 	{name: "Link", label: "超链接", icon: "link"}
 	{name: "Grid", label: "布局", icon: "text"}
 ]
-defaultConfig = {
-	Button: {
+defaultConfig =
+	Button:
 		caption: "按钮"
-	}
-	Input: {
+	Input:
 		label: "输入框"
-	}
-	Checkbox: {
-
-	}
-	Image: {
+	Checkbox: {}
+	Image:
 		src: "./resources/images/white-image.png"
-	}
-	Divider: {
-
-	}
+	Divider: {}
 	TextArea: {}
-}
+wideClass = "one,two,three,four,five,six,seven,eight,nine,ten,eleven,twelve,thirteen,fourteen,fifteen,sixteen".split(",")
 
+editor =
+	droppableOptions:
+		fields:
+			hoverClass: "accepted"
+			greedy: true
+			accept: (el)->
+				return true
+			over: ()->
+				wide=$(@).attr("wide")
+				if wide
+					wide = parseInt(wide)
+				else
+					wide=16
+				if wide<16
+					wideClassName=wideClass[16-wide]
+
+					if editor.indicator
+						if editor.indicator.parentNode is @
+							return
+						else
+							$(editor.indicator).remove()
+					editor.indicator = $.xCreate({
+						tagName: "div"
+						class: "two wide field"
+					})
+					$(@).append(editor.indicator)
+
+			drop: (event, ui)->
+				name = ui.draggable.attr("cname")
+				constr = cola[name]
+				button = new constr(defaultConfig[name])
+				dom = button.getDom()
+				$fly(event.target).append(dom)
+		field:
+			hoverClass: "accepted"
+			greedy: true
+			accept: (el)->
+				return true
+			over: ()->
+
+			drop: (event, ui)->
+				name = ui.draggable.attr("cname")
+				constr = cola[name]
+				button = new constr(defaultConfig[name])
+				dom = button.getDom()
+				$fly(event.target).append(dom)
 
 cola((model)->
 	model.set("components", components)
@@ -37,7 +76,6 @@ cola((model)->
 			columns: 12
 		}
 	})
-	wideClass = "one,two,three,four,five,six,seven,eight,nine,ten,eleven,twelve,thirteen,fourteen,fifteen,sixteen".split(",")
 	toolbar = {}
 
 	toolbarEl = $.xCreate({
@@ -61,19 +99,23 @@ cola((model)->
 						fields = $.xCreate({
 							tagName: "div"
 							class: "fields"
-							content: [
-								{
-									tagName: "div"
-									class: "eight wide field"
-								}
-							]
+							wide: 16
 						})
-						$field.next().before(fields);
+						$field.after(fields);
+						$(fields).droppable(editor.droppableOptions.fields).find(">.field").droppable(editor.droppableOptions.field)
 						setTimeout(()->
 							$(fields).prepend($field)
 							$field.addClass("eight wide")
 						, 50)
 					else
+						parentFields = $(@).closest('.fields')
+						if parentFields.length > 0
+							oldWide = parentFields.attr("wide")
+							if oldWide
+								oldWide=parseInt(oldWide)
+							else
+								oldWide = 16
+							parentFields.attr("wide", oldWide - 1);
 						currentClassName = wideClass[wide - 2]
 						$field.removeClass(wideClassName).addClass(currentClassName)
 
@@ -94,6 +136,14 @@ cola((model)->
 					if wide is 16
 						return
 					else
+						parentFields = $(@).closest('.fields')
+						if parentFields.length > 0
+							oldWide = parentFields.attr("wide")
+							if oldWide
+								oldWide=parseInt(oldWide)
+							else
+								oldWide = 16
+							parentFields.attr("wide", oldWide + 1)
 						currentClassName = wideClass[wide]
 						$field.removeClass(wideClassName).addClass(currentClassName)
 			}
@@ -123,6 +173,46 @@ cola((model)->
 )
 
 cola.on("ready", ()->
+	editor =
+		droppableOptions:
+			fields:
+				hoverClass: "accepted"
+				greedy: true
+				accept: (el)->
+					return true
+				over: ()->
+					if $(@).hasClass("two-el")
+						if editor.indicator
+							if editor.indicator.parentNode is @
+								return
+							else
+								$(editor.indicator).remove()
+						editor.indicator = $.xCreate({
+							tagName: "div"
+							class: "two wide field"
+						})
+						$(@).append(editor.indicator)
+
+				drop: (event, ui)->
+					name = ui.draggable.attr("cname")
+					constr = cola[name]
+					button = new constr(defaultConfig[name])
+					dom = button.getDom()
+					$fly(event.target).append(dom)
+			field:
+				hoverClass: "accepted"
+				greedy: true
+				accept: (el)->
+					return true
+				over: ()->
+
+				drop: (event, ui)->
+					name = ui.draggable.attr("cname")
+					constr = cola[name]
+					button = new constr(defaultConfig[name])
+					dom = button.getDom()
+					$fly(event.target).append(dom)
+
 	$(".component").draggable({
 		helper: (event)->
 			target = event.currentTarget
@@ -137,22 +227,27 @@ cola.on("ready", ()->
 		cursorAt:
 			left: 2
 			top: 2
+		stop: ()->
+			if editor.indicator
+				if editor.indicator.children.length is 0
+					setTimeout(()->
+						$(editor.indicator).remove()
+					, 100)
+
+
 	});
-	$(".draw-pad>.ui.grid>.column,.draw-pad>.ui.form .field").droppable({
+
+	$(".draw-pad>.ui.form").droppable({
 		hoverClass: "accepted"
+		greedy: true
 		accept: (el)->
 			return true
-		drop: (event, ui)->
-			name = ui.draggable.attr("cname")
-			constr = cola[name]
-			button = new constr(defaultConfig[name])
-			dom = button.getDom()
-			$fly(event.target).append(dom)
+		activate: (event, ui)->
+			editor.indicator = $.xCreate({
+				tagName: "div"
+				class: "field"
+			})
+			$(editor.indicator).droppable(editor.droppableOptions.field)
+			$(@).append(editor.indicator)
 	})
-
-	$(".draw-pad>.ui.form>.field").hover(()->
-		$(@).addClass("active")
-	, ()->
-		$(@).removeClass("active")
-	)
 )
