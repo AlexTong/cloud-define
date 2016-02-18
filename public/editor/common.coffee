@@ -38,6 +38,7 @@ editor =
 		fields:
 			hoverClass: "accepted"
 			greedy: true
+			scope: "tasks"
 			accept: (el)->
 				return true
 			activate: ()->
@@ -59,6 +60,7 @@ editor =
 		field:
 			hoverClass: "accepted"
 			greedy: true
+			scope: "tasks"
 			accept: (el)->
 				return !$(@).hasClass("do-not")
 			drop: (event, ui)->
@@ -100,11 +102,12 @@ cola((model)->
 					if wide is 0
 						fields = $.xCreate({
 							tagName: "div"
-							class: "fields"
+							class: "fields c-sortable"
 							wide: 8
 						})
 						$field.after(fields);
 						$(fields).droppable(editor.droppableOptions.fields).find(">.field").droppable(editor.droppableOptions.field)
+						$(fields).sortable(connectWith: ".c-sortable").disableSelection();
 						setTimeout(()->
 							$(fields).prepend($field)
 							$field.addClass("eight wide")
@@ -185,6 +188,7 @@ cola.on("ready", ()->
 			})
 		appendTo: "body"
 		revert: "invalid"
+		scope: "tasks"
 		cursor: "pointer"
 		cursorAt:
 			left: 2
@@ -201,6 +205,7 @@ cola.on("ready", ()->
 	$(".draw-pad>.ui.form").droppable({
 		hoverClass: "accepted"
 		greedy: true
+		scope: "tasks"
 		activate: ()->
 			indicator = $.xCreate({
 				tagName: "div"
@@ -209,5 +214,5 @@ cola.on("ready", ()->
 			$(@).append(indicator)
 			$(indicator).droppable(editor.droppableOptions.field)
 			editor.indicators.push(indicator)
-	})
+	}).sortable(connectWith: ".c-sortable").disableSelection();
 )
