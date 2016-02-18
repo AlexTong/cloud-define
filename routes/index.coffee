@@ -5,5 +5,8 @@ router = express.Router()
 router.get '/', (req, res, next) ->
 	res.render 'index',
 		title: 'Express'
-
+# GET home page.
+router.get '/sortable', (req, res, next) ->
+	res.render 'sortable',
+		title: 'Express'
 module.exports = router

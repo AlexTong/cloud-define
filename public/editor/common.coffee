@@ -21,53 +21,55 @@ defaultConfig =
 	Divider: {}
 	TextArea: {}
 wideClass = "one,two,three,four,five,six,seven,eight,nine,ten,eleven,twelve,thirteen,fourteen,fifteen,sixteen".split(",")
-
+removeIndicator = (indicator)->
+	parentNode = indicator.parentNode
+	$indicator = $(indicator)
+	if parentNode and $(parentNode).hasClass("fields")
+		pWide = 0
+		for className in wideClass
+			if $indicator.hasClass(className)
+				pWide = wideClass.indexOf(className) + 1
+				break
+		$(parentNode).attr("wide", 16 - pWide)
+	$(indicator).remove()
 editor =
+	indicators: []
 	droppableOptions:
 		fields:
 			hoverClass: "accepted"
 			greedy: true
 			accept: (el)->
 				return true
-			over: ()->
-				wide=$(@).attr("wide")
+			activate: ()->
+				wide = $(@).attr("wide")
 				if wide
 					wide = parseInt(wide)
 				else
-					wide=16
-				if wide<16
-					wideClassName=wideClass[16-wide]
-
-					if editor.indicator
-						if editor.indicator.parentNode is @
-							return
-						else
-							$(editor.indicator).remove()
-					editor.indicator = $.xCreate({
+					wide = 16
+				if wide < 16
+					wideClassName = wideClass[15 - wide]
+					indicator = $.xCreate({
 						tagName: "div"
-						class: "two wide field"
+						class: "#{wideClassName} wide field c-indicator"
 					})
-					$(@).append(editor.indicator)
-
-			drop: (event, ui)->
-				name = ui.draggable.attr("cname")
-				constr = cola[name]
-				button = new constr(defaultConfig[name])
-				dom = button.getDom()
-				$fly(event.target).append(dom)
+					$(@).append(indicator)
+					$(indicator).droppable(editor.droppableOptions.field)
+					editor.indicators.push(indicator)
+					$(@).attr("wide", 16)
 		field:
 			hoverClass: "accepted"
 			greedy: true
 			accept: (el)->
-				return true
-			over: ()->
-
+				return !$(@).hasClass("do-not")
 			drop: (event, ui)->
 				name = ui.draggable.attr("cname")
-				constr = cola[name]
-				button = new constr(defaultConfig[name])
-				dom = button.getDom()
-				$fly(event.target).append(dom)
+				widget = new cola[name](defaultConfig[name])
+				dom = widget.getDom()
+				$fly(@).append(dom).removeClass("c-indicator").addClass("do-not")
+				index = editor.indicators.indexOf(@)
+				if index >= 0
+					editor.indicators.splice(index, 1)
+
 
 cola((model)->
 	model.set("components", components)
@@ -99,7 +101,7 @@ cola((model)->
 						fields = $.xCreate({
 							tagName: "div"
 							class: "fields"
-							wide: 16
+							wide: 8
 						})
 						$field.after(fields);
 						$(fields).droppable(editor.droppableOptions.fields).find(">.field").droppable(editor.droppableOptions.field)
@@ -112,7 +114,7 @@ cola((model)->
 						if parentFields.length > 0
 							oldWide = parentFields.attr("wide")
 							if oldWide
-								oldWide=parseInt(oldWide)
+								oldWide = parseInt(oldWide)
 							else
 								oldWide = 16
 							parentFields.attr("wide", oldWide - 1);
@@ -140,7 +142,7 @@ cola((model)->
 						if parentFields.length > 0
 							oldWide = parentFields.attr("wide")
 							if oldWide
-								oldWide=parseInt(oldWide)
+								oldWide = parseInt(oldWide)
 							else
 								oldWide = 16
 							parentFields.attr("wide", oldWide + 1)
@@ -173,46 +175,6 @@ cola((model)->
 )
 
 cola.on("ready", ()->
-	editor =
-		droppableOptions:
-			fields:
-				hoverClass: "accepted"
-				greedy: true
-				accept: (el)->
-					return true
-				over: ()->
-					if $(@).hasClass("two-el")
-						if editor.indicator
-							if editor.indicator.parentNode is @
-								return
-							else
-								$(editor.indicator).remove()
-						editor.indicator = $.xCreate({
-							tagName: "div"
-							class: "two wide field"
-						})
-						$(@).append(editor.indicator)
-
-				drop: (event, ui)->
-					name = ui.draggable.attr("cname")
-					constr = cola[name]
-					button = new constr(defaultConfig[name])
-					dom = button.getDom()
-					$fly(event.target).append(dom)
-			field:
-				hoverClass: "accepted"
-				greedy: true
-				accept: (el)->
-					return true
-				over: ()->
-
-				drop: (event, ui)->
-					name = ui.draggable.attr("cname")
-					constr = cola[name]
-					button = new constr(defaultConfig[name])
-					dom = button.getDom()
-					$fly(event.target).append(dom)
-
 	$(".component").draggable({
 		helper: (event)->
 			target = event.currentTarget
@@ -228,26 +190,24 @@ cola.on("ready", ()->
 			left: 2
 			top: 2
 		stop: ()->
-			if editor.indicator
-				if editor.indicator.children.length is 0
-					setTimeout(()->
-						$(editor.indicator).remove()
-					, 100)
-
+			setTimeout(()->
+				for indicator in editor.indicators
+					removeIndicator(indicator)
+				editor.indicators = []
+			, 100)
 
 	});
 
 	$(".draw-pad>.ui.form").droppable({
 		hoverClass: "accepted"
 		greedy: true
-		accept: (el)->
-			return true
-		activate: (event, ui)->
-			editor.indicator = $.xCreate({
+		activate: ()->
+			indicator = $.xCreate({
 				tagName: "div"
 				class: "field"
 			})
-			$(editor.indicator).droppable(editor.droppableOptions.field)
-			$(@).append(editor.indicator)
+			$(@).append(indicator)
+			$(indicator).droppable(editor.droppableOptions.field)
+			editor.indicators.push(indicator)
 	})
 )
